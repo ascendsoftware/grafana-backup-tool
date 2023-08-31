@@ -1,28 +1,32 @@
-from grafana_backup.create_org import main as create_org
-from grafana_backup.api_checks import main as api_checks
-from grafana_backup.create_folder import main as create_folder
-from grafana_backup.update_folder_permissions import main as update_folder_permissions
-from grafana_backup.create_datasource import main as create_datasource
-from grafana_backup.create_dashboard import main as create_dashboard
-from grafana_backup.create_alert_channel import main as create_alert_channel
-from grafana_backup.create_alert_rule import main as create_alert_rule
-from grafana_backup.create_user import main as create_user
-from grafana_backup.create_snapshot import main as create_snapshot
-from grafana_backup.create_annotation import main as create_annotation
-from grafana_backup.create_team import main as create_team
-from grafana_backup.create_team_member import main as create_team_member
-from grafana_backup.create_library_element import main as create_library_element
-from grafana_backup.s3_download import main as s3_download
-from grafana_backup.azure_storage_download import main as azure_storage_download
-from grafana_backup.gcs_download import main as gcs_download
-from glob import glob
+import collections
+import fnmatch
+import os
+import shutil
 import sys
 import tarfile
 import tempfile
-import os
-import shutil
-import fnmatch
-import collections
+from glob import glob
+
+from grafana_backup.api_checks import main as api_checks
+from grafana_backup.azure_storage_download import main as azure_storage_download
+from grafana_backup.create_alert_channel import main as create_alert_channel
+from grafana_backup.create_alert_contact_point import main as create_alert_contact_point
+from grafana_backup.create_alert_policy import main as create_alert_policy
+from grafana_backup.create_alert_rule import main as create_alert_rule
+from grafana_backup.create_alert_template import main as create_alert_template
+from grafana_backup.create_annotation import main as create_annotation
+from grafana_backup.create_dashboard import main as create_dashboard
+from grafana_backup.create_datasource import main as create_datasource
+from grafana_backup.create_folder import main as create_folder
+from grafana_backup.create_library_element import main as create_library_element
+from grafana_backup.create_org import main as create_org
+from grafana_backup.create_snapshot import main as create_snapshot
+from grafana_backup.create_team import main as create_team
+from grafana_backup.create_team_member import main as create_team_member
+from grafana_backup.create_user import main as create_user
+from grafana_backup.gcs_download import main as gcs_download
+from grafana_backup.s3_download import main as s3_download
+from grafana_backup.update_folder_permissions import main as update_folder_permissions
 
 
 def main(args, settings):
@@ -77,7 +81,7 @@ def main(args, settings):
     # Shell game magic warning: restore_function keys require the 's'
     # to be removed in order to match file extension names...
     restore_functions = collections.OrderedDict()
-    restore_functions['folder'] = create_folder # Folders must be restored before Library-Elements
+    restore_functions['folder'] = create_folder  # Folders must be restored before Library-Elements
     restore_functions['datasource'] = create_datasource
     restore_functions['library_element'] = create_library_element  # Library-Elements must be restored before dashboards
     restore_functions['dashboard'] = create_dashboard
@@ -90,6 +94,9 @@ def main(args, settings):
     restore_functions['team_member'] = create_team_member
     restore_functions['folder_permission'] = update_folder_permissions
     restore_functions['alert_rule'] = create_alert_rule
+    restore_functions['alert_contact_point'] = create_alert_contact_point
+    restore_functions['alert_policy'] = create_alert_policy
+    restore_functions['alert_template'] = create_alert_template
 
     if sys.version_info >= (3,):
         with tempfile.TemporaryDirectory() as tmpdir:

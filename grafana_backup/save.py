@@ -1,5 +1,8 @@
 from grafana_backup.api_checks import main as api_checks
 from grafana_backup.save_alert_rules import main as save_alert_rules
+from grafana_backup.save_alert_contact_points import main as save_alert_contact_points
+from grafana_backup.save_alert_policies import main as save_alert_policies
+from grafana_backup.save_alert_templates import main as save_alert_templates
 from grafana_backup.save_dashboards import main as save_dashboards
 from grafana_backup.save_datasources import main as save_datasources
 from grafana_backup.save_folders import main as save_folders
@@ -31,13 +34,16 @@ def main(args, settings):
                         'organizations': save_orgs,
                         'users': save_users,
                         'snapshots': save_snapshots,
-                        'versions': save_dashboard_versions, # left for backwards compatibility
+                        'versions': save_dashboard_versions,  # left for backwards compatibility
                         'dashboard-versions': save_dashboard_versions,
                         'annotations': save_annotations,
                         'library-elements': save_library_elements,
                         'teams': save_teams,
                         'team-members': save_team_members,
-                        'alert-rules': save_alert_rules}
+                        'alert-rules': save_alert_rules,
+                        'alert-contact-points': save_alert_contact_points,
+                        'alert-policies': save_alert_policies,
+                        'alert-templates': save_alert_templates}
 
     (status, json_resp, dashboard_uid_support, datasource_uid_support, paging_support) = api_checks(settings)
 
