@@ -1,0 +1,20 @@
+name: Docker Build Release
+on:
+  workflow_dispatch:
+    inputs:
+      rc-version:
+        description: 'Docker image source release candidate version, ex: v1.0.0-rc0'
+        required: true
+        type: string
+jobs:
+  call-docker-image-tag-version:
+    uses: ascendsoftware/gha-workflows/.github/workflows/docker-image-tag-version.yml@v2.0.0
+    secrets: inherit
+    with:
+      aws-region: ${{ secrets.AWS_REGION_US_INFRASTRUCTURE_PROD }}
+      ecr-registry: ${{ secrets.AWS_ECR_REPO_US_INFRASTRUCTURE_PROD }}
+      ecr-repository: 'grafana-backup'
+      rc-version: ${{ inputs.rc-version }}
+
+
+      
